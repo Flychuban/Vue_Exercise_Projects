@@ -73,17 +73,23 @@ function handleClick(row, cell) {
         console.log(board.value)
     }
 
-    // Check if there is a winner
+    // Check if there is a winner after each move is put on the board template
     const winner = checkWinner()
-    if (winner) {
-        alert(`Player ${winner} wins!`)
-        clearBoard()
+    if (winner) {    
+        setTimeout(() => {
+                alert(`Player ${winner} wins!`)
+                clearBoard()
+        }, 1000);
     }
 
+
     // Check if the board is full
-    if (checkBoardFull()) {
-        alert('The game is a draw!')
-        clearBoard()
+    isFull = checkBoardFull()
+    if (isFull && !winner) {
+        setTimeout(() => {
+            alert('The game is a draw!')
+            clearBoard()
+        }, 1000);
     }
 }
 
