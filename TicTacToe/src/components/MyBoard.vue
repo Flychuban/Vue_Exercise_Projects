@@ -48,15 +48,42 @@ function checkWinner() {
     return null
 }
 
+function checkBoardFull() {
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (board.value[i][j] === '') {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
 function handleClick(row, cell) {
+    // In range start from 1 so we need to decrement by 1
     row--
     cell--
 
     if (board.value[row][cell] === '') {
         board.value[row][cell] = currentPlayer.value
         currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X'
+
         console.log(row, cell)
         console.log(board.value)
+    }
+
+    // Check if there is a winner
+    const winner = checkWinner()
+    if (winner) {
+        alert(`Player ${winner} wins!`)
+        clearBoard()
+    }
+
+    // Check if the board is full
+    if (checkBoardFull()) {
+        alert('The game is a draw!')
+        clearBoard()
     }
 }
 
@@ -68,7 +95,7 @@ function handleClick(row, cell) {
             <div class="row" v-for="row in 3" :key="row">
                 <div class="cell" v-for="cell in 3" :key="cell" @click="handleClick(row, cell)">
                     <div class="cell-inner">
-                        <span class="cell-content"></span>
+                        <span class="cell-content">{{ board[row-1][cell-1] }}</span>
                     </div>
                 </div>
             </div>
@@ -120,7 +147,8 @@ function handleClick(row, cell) {
 }
 
 .cell-content {
-    font-size: 2rem;
+    font-size: 4rem;
+    font-weight: bold;
 }
 
 .status {
