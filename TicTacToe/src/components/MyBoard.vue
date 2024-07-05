@@ -1,4 +1,30 @@
+
+<!-- Export default this component -->
 <script setup>
+import { ref } from 'vue'
+const board = ref([
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', '']
+])
+
+const currentPlayer = ref('X')
+
+function clearBoard() {
+    board.value = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ]
+    currentPlayer.value = 'X'
+}
+
+function handleClick(row, cell) {
+    if (board.value[row][cell] === '') {
+        board.value[row][cell] = currentPlayer.value
+        currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X'
+    }
+}
 
 </script>
 
@@ -6,20 +32,20 @@
     <div class="board-container">
         <div class="board">
             <div class="row" v-for="row in 3" :key="row">
-            <div class="cell" v-for="cell in 3" :key="cell">
-                <div class="cell-inner">
-                <span class="cell-content"></span>
+                <div class="cell" v-for="cell in 3" :key="cell">
+                    <div class="cell-inner" @click="handleClick(row, cell)">
+                        <span class="cell-content"></span>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
         <div class="status">
             <div class="status-inner">
-            <span class="status-content">Next player: X</span>
+                <span class="status-content">Next player: {{ currentPlayer }}</span>
             </div>
         </div>
         <div class="restart">
-            <button class="restart-button">Restart</button>
+            <button class="restart-button" @click="clearBoard()">Restart</button>
         </div>
     </div>
 </template>
@@ -29,11 +55,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 75vh;
+    justify-content: flex-start;
+    height: 100vh;
 }
 
 .board {
+    margin-top: 7.5vh;
+    margin-bottom: 2.5vh;
     display: flex;
     flex-direction: column;
     border: 1px solid #000;
@@ -44,9 +72,9 @@
 }
 
 .cell {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #000;
+    width: 15vh;
+    height: 15vh;
+    border: 3px solid #000;
 }
 
 .cell-inner {

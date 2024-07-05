@@ -1,35 +1,27 @@
 <!-- Tic Tac Toe game -->
 
 <script setup>
-import { ref } from 'vue'
+import MyBoard from './components/MyBoard.vue'
 
 </script>
 
 <template>
   <div id="app">
     <h1>Tic Tac Toe</h1>
-
-    <div class="board-container">
-      <div class="board">
-        <div class="row" v-for="row in 3" :key="row">
-          <div class="cell" v-for="cell in 3" :key="cell">
-            <div class="cell-inner">
-              <span class="cell-content"></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="status">
-        <div class="status-inner">
-          <span class="status-content">Next player: X</span>
-        </div>
-      </div>
-      <div class="restart">
-        <button class="restart-button">Restart</button>
-      </div>
-    </div>
+    <MyBoard />
   </div>
 </template>
 
 <style scoped>
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-center;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 4rem;
+}
 </style>
