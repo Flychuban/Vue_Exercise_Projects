@@ -17,12 +17,46 @@ function clearBoard() {
         ['', '', '']
     ]
     currentPlayer.value = 'X'
+
+    console.log(board.value)
+}
+
+function checkWinner() {
+    // Check rows
+    for (let i = 0; i < 3; i++) {
+        if (board.value[i][0] === board.value[i][1] && board.value[i][1] === board.value[i][2] && board.value[i][0] !== '') {
+            return board.value[i][0]
+        }
+    }
+
+    // Check columns
+    for (let i = 0; i < 3; i++) {
+        if (board.value[0][i] === board.value[1][i] && board.value[1][i] === board.value[2][i] && board.value[0][i] !== '') {
+            return board.value[0][i]
+        }
+    }
+
+    // Check diagonals
+    if (board.value[0][0] === board.value[1][1] && board.value[1][1] === board.value[2][2] && board.value[0][0] !== '') {
+        return board.value[0][0]
+    }
+
+    if (board.value[0][2] === board.value[1][1] && board.value[1][1] === board.value[2][0] && board.value[0][2] !== '') {
+        return board.value[0][2]
+    }
+
+    return null
 }
 
 function handleClick(row, cell) {
+    row--
+    cell--
+
     if (board.value[row][cell] === '') {
         board.value[row][cell] = currentPlayer.value
         currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X'
+        console.log(row, cell)
+        console.log(board.value)
     }
 }
 
@@ -32,8 +66,8 @@ function handleClick(row, cell) {
     <div class="board-container">
         <div class="board">
             <div class="row" v-for="row in 3" :key="row">
-                <div class="cell" v-for="cell in 3" :key="cell">
-                    <div class="cell-inner" @click="handleClick(row, cell)">
+                <div class="cell" v-for="cell in 3" :key="cell" @click="handleClick(row, cell)">
+                    <div class="cell-inner">
                         <span class="cell-content"></span>
                     </div>
                 </div>
