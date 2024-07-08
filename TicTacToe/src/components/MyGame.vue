@@ -2,23 +2,24 @@
 import { ref, computed } from 'vue'
 import { every } from 'lodash'
 
-const board = ref([
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', '']
-])
+const {settings} = defineProps(['settings'])
 
-const currentPlayer = ref('X')
+const numRows = ref(settings.rows)
+const numColumns = ref(settings.columns)
+
+const board = ref([])
+const currentPlayer = ref('')
 const winningLine = ref(null)
 const lineType = ref("")
+initGame(numRows.value, numColumns.value)
+
+function initGame(numRows, numColumns) {
+    board.value = Array.from({ length: numRows }, () => Array.from({ length: numColumns }, () => ''))
+    currentPlayer.value = 'X'
+}
 
 function clearBoard() {
-    board.value = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-    ]
-    currentPlayer.value = 'X'
+    initGame(numRows.value, numColumns.value)
     winningLine.value = null
 
     console.log(board.value)
@@ -31,36 +32,86 @@ function timeout_func(custom_msg) {
     }, 1000);
 }
 
-function checkWinner() {
+// function checkWinner() {
+//     // Check rows
+//     for (let i = 0; i < 3; i++) {
+//         if (board.value[i][0] === board.value[i][1] && board.value[i][1] === board.value[i][2] && board.value[i][0] !== '') {
+//             return { player: board.value[i][0], line: [[i, 0], [i, 1], [i, 2]] }
+//         }
+//     }
+
+//     // Check columns
+//     for (let i = 0; i < 3; i++) {
+//         if (board.value[0][i] === board.value[1][i] && board.value[1][i] === board.value[2][i] && board.value[0][i] !== '') {
+//             return { player: board.value[0][i], line: [[0, i], [1, i], [2, i]] }
+//         }
+//     }
+
+//     // Check diagonals
+//     if (board.value[0][0] === board.value[1][1] && board.value[1][1] === board.value[2][2] && board.value[0][0] !== '') {
+//         return { player: board.value[0][0], line: [[0, 0], [1, 1], [2, 2]] }
+//     }
+
+//     if (board.value[0][2] === board.value[1][1] && board.value[1][1] === board.value[2][0] && board.value[0][2] !== '') {
+//         return { player: board.value[0][2], line: [[0, 2], [1, 1], [2, 0]] }
+//     }
+
+//     return null
+// }
+
+function checkWinner(board, numRows, numCols) {
     // Check rows
-    for (let i = 0; i < 3; i++) {
-        if (board.value[i][0] === board.value[i][1] && board.value[i][1] === board.value[i][2] && board.value[i][0] !== '') {
-            return { player: board.value[i][0], line: [[i, 0], [i, 1], [i, 2]] }
+    for (let i = 0; i < numRows; i++) {
+        for (let j = 0; j <= numCols - 3; j++) {
+            if (board.value[i][j] === board.value[i][j + 1] &&
+                board.value[i][j + 1] === board.value[i][j + 2] &&
+                board.value[i][j] !== '') {
+                return { player: board.value[i][j], line: [[i, j], [i, j + 1], [i, j + 2]] }
+            }
         }
     }
 
     // Check columns
-    for (let i = 0; i < 3; i++) {
-        if (board.value[0][i] === board.value[1][i] && board.value[1][i] === board.value[2][i] && board.value[0][i] !== '') {
-            return { player: board.value[0][i], line: [[0, i], [1, i], [2, i]] }
+    for (let i = 0; i <= numRows - 3; i++) {
+        for (let j = 0; j < numCols; j++) {
+            if (board.value[i][j] === board.value[i + 1][j] &&
+                board.value[i + 1][j] === board.value[i + 2][j] &&
+                board.value[i][j] !== '') {
+                return { player: board.value[i][j], line: [[i, j], [i + 1, j], [i + 2, j]] }
+            }
         }
     }
 
-    // Check diagonals
-    if (board.value[0][0] === board.value[1][1] && board.value[1][1] === board.value[2][2] && board.value[0][0] !== '') {
-        return { player: board.value[0][0], line: [[0, 0], [1, 1], [2, 2]] }
+    // Check diagonals (top-left to bottom-right)
+    for (let i = 0; i <= numRows - 3; i++) {
+        for (let j = 0; j <= numCols - 3; j++) {
+            if (board.value[i][j] === board.value[i + 1][j + 1] &&
+                board.value[i + 1][j + 1] === board.value[i + 2][j + 2] &&
+                board.value[i][j] !== '') {
+                return { player: board.value[i][j], line: [[i, j], [i + 1, j + 1], [i + 2, j + 2]] }
+            }
+        }
     }
 
-    if (board.value[0][2] === board.value[1][1] && board.value[1][1] === board.value[2][0] && board.value[0][2] !== '') {
-        return { player: board.value[0][2], line: [[0, 2], [1, 1], [2, 0]] }
+    // Check diagonals (top-right to bottom-left)
+    for (let i = 0; i <= numRows - 3; i++) {
+        for (let j = 2; j < numCols; j++) {
+            if (board.value[i][j] === board.value[i + 1][j - 1] &&
+                board.value[i + 1][j - 1] === board.value[i + 2][j - 2] &&
+                board.value[i][j] !== '') {
+                return { player: board.value[i][j], line: [[i, j], [i + 1, j - 1], [i + 2, j - 2]] }
+            }
+        }
     }
 
-    return null
+    return null;
 }
+
+
+
 
 function checkBoardFull() {
     // Check if the board  values are not empty
-    console.log(every(board.value, row => every(row, cell => cell !== '')))
     return every(board.value, row => every(row, cell => cell !== ''))
 }
 
