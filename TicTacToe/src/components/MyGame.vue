@@ -131,7 +131,7 @@ function handleClick(row, cell) {
 
 
     // Check if there is a winner after each move is put on the board template
-    const winner = checkWinner()
+    const winner = checkWinner(board, numRows.value, numColumns.value)
     if (winner) {
         winningLine.value = winner.line
         timeout_func(`Player ${winner.player} wins!`)
@@ -145,52 +145,114 @@ function handleClick(row, cell) {
     }
 }
 
+// const lineStyle = computed(() => {
+//     if (!winningLine.value) return {}
+//     const start = winningLine.value[0]
+//     const end = winningLine.value[2]
+//     const [startRow, startCol] = start
+//     const [endRow, endCol] = end
+//     const isRow = startRow === endRow // Check if the start and end row are the same
+//     const isCol = startCol === endCol // Check if the start and end column are the same
+
+//     console.log(startRow, startCol, endRow, endCol)
+//     // Check if the line is diagonal from top-left to bottom-right
+//     const isDiagonal = startRow === 0 && startCol === 0 && endRow === 2 && endCol === 2
+//     // Check if the line is diagonal from top-right to bottom-left
+//     const isAntiDiagonal = startRow === 0 && startCol === 2 && endRow === 2 && endCol === 0
+
+//     const isDiagonal
+
+//     if (isRow) {
+//         lineType.value = "isRow"
+//         return {
+//             top: `${startRow * 33.3 + 16.5}%`,
+//         }
+//     } else if (isCol) {
+//         lineType.value = "isCol"
+//         return {
+//             left: `${startCol * 33.3 + 16.5}%`,
+//         }
+//     }
+//     else if (isDiagonal) {
+//         lineType.value = "isDiagonal"
+//         return {
+//             transform: 'rotate(-45deg)'
+//         }
+//     }
+//     else if (isAntiDiagonal) {
+//         lineType.value = "isAntiDiagonal"
+//         return {
+//             transform: 'rotate(45deg)'
+//         }
+//     }
+// })
+
+
 const lineStyle = computed(() => {
     if (!winningLine.value) return {}
     const start = winningLine.value[0]
     const end = winningLine.value[2]
     const [startRow, startCol] = start
     const [endRow, endCol] = end
+    const numRows = board.value.length
+    const numCols = board.value[0].length
     const isRow = startRow === endRow // Check if the start and end row are the same
     const isCol = startCol === endCol // Check if the start and end column are the same
 
     console.log(startRow, startCol, endRow, endCol)
+
     // Check if the line is diagonal from top-left to bottom-right
-    const isDiagonal = startRow === 0 && startCol === 0 && endRow === 2 && endCol === 2
+    const isDiagonal = (endRow - startRow === endCol - startCol) && (startRow <= endRow) && (startCol <= endCol)
+
     // Check if the line is diagonal from top-right to bottom-left
-    const isAntiDiagonal = startRow === 0 && startCol === 2 && endRow === 2 && endCol === 0
+    const isAntiDiagonal = (endRow - startRow === startCol - endCol) && (startRow <= endRow) && (startCol >= endCol)
 
     if (isRow) {
         lineType.value = "isRow"
         return {
-            top: `${startRow * 33.3 + 16.5}%`,
+            top: `${(startRow + 0.5) * (100 / numRows)}%`,
+            width: '100%',
+            transform: 'none'
         }
     } else if (isCol) {
         lineType.value = "isCol"
         return {
-            left: `${startCol * 33.3 + 16.5}%`,
+            left: `${(startCol + 0.5) * (100 / numCols)}%`,
+            height: '100%',
+            transform: 'none'
         }
     }
     else if (isDiagonal) {
         lineType.value = "isDiagonal"
         return {
-            transform: 'rotate(-45deg)'
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            transform: 'rotate(-45deg)',
+            transformOrigin: 'top left'
         }
     }
     else if (isAntiDiagonal) {
         lineType.value = "isAntiDiagonal"
         return {
-            transform: 'rotate(45deg)'
+            top: 0,
+            right: 0,
+            width: '100%',
+            height: '100%',
+            transform: 'rotate(45deg)',
+            transformOrigin: 'top right'
         }
     }
 })
+
 </script>
 
 <template>
     <div class="board-container">
         <div class="board">
-            <div class="row" v-for="row in 3" :key="row">
-                <div class="cell" v-for="cell in 3" :key="cell" @click="handleClick(row, cell)">
+            <div class="row" v-for="row in numRows" :key="row">
+                <div class="cell" v-for="cell in numColumns" :key="cell" @click="handleClick(row, cell)">
                     <div class="cell-inner">
                         <!-- X - blue color -->
                         <!-- O - red color -->
