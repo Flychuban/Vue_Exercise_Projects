@@ -26,11 +26,18 @@ function clearBoard() {
 }
 
 function timeout_func(custom_msg) {
-    // setTimeout(() => {
-    //     alert(custom_msg)
-    //     clearBoard()
-    // }, 1000);
+    setTimeout(() => {
+        alert(custom_msg)
+        clearBoard()
+    }, 1000);
 }
+
+const adjustCellsDimensions = computed(() => {
+    return {
+        width: `${80 / numColumns.value}vw`,
+        height: `${80 / numRows.value}vh`
+    }
+})
 
 // function checkWinner() {
 //     // Check rows
@@ -252,7 +259,7 @@ const lineStyle = computed(() => {
     <div class="board-container">
         <div class="board">
             <div class="row" v-for="row in numRows" :key="row">
-                <div class="cell" v-for="cell in numColumns" :key="cell" @click="handleClick(row, cell)">
+                <div class="cell" v-for="cell in numColumns" :key="cell" :style="adjustCellsDimensions" @click="handleClick(row, cell)">
                     <div class="cell-inner">
                         <!-- X - blue color -->
                         <!-- O - red color -->
@@ -295,8 +302,6 @@ const lineStyle = computed(() => {
 }
 
 .cell {
-    width: 13vw;
-    height: 13vw;
     border: 3px solid #000;
 }
 
