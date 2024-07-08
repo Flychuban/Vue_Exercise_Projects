@@ -24,7 +24,7 @@ function clearBoard() {
     console.log(board.value)
 }
 
-function timeout_func(custom_msg){
+function timeout_func(custom_msg) {
     setTimeout(() => {
         alert(custom_msg)
         clearBoard()
@@ -69,7 +69,7 @@ function handleClick(row, cell) {
     row--
     cell--
 
-    if (board.value[row][cell] !== '') 
+    if (board.value[row][cell] !== '')
         return
 
     board.value[row][cell] = currentPlayer.value
@@ -77,7 +77,7 @@ function handleClick(row, cell) {
 
     console.log(row, cell)
     console.log(board.value)
-    
+
 
     // Check if there is a winner after each move is put on the board template
     const winner = checkWinner()
@@ -96,7 +96,7 @@ function handleClick(row, cell) {
 
 const lineStyle = computed(() => {
     if (!winningLine.value) return {}
-    const start= winningLine.value[0]
+    const start = winningLine.value[0]
     const end = winningLine.value[2]
     const [startRow, startCol] = start
     const [endRow, endCol] = end
@@ -148,7 +148,7 @@ const lineStyle = computed(() => {
                     </div>
                 </div>
             </div>
-            <div v-if="winningLine" class="winner-line" :style="lineStyle" :class="lineType" ></div>
+            <div v-if="winningLine" class="winner-line" :style="lineStyle" :class="lineType"></div>
         </div>
         <div class="status">
             <div class="status-inner">

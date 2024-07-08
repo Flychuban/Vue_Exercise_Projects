@@ -2,13 +2,14 @@
 
 <script setup>
 import MyBoard from './components/MyBoard.vue'
+import MyGame from './components/MyGame.vue'
 
 </script>
 
 <template>
   <div id="app">
     <h1>Tic Tac Toe</h1>
-    <MyBoard />
+    <MyGame />
   </div>
 </template>
 
