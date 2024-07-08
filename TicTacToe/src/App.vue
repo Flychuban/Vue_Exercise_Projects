@@ -23,5 +23,6 @@ import MyBoard from './components/MyBoard.vue'
 
 h1 {
   font-size: 4rem;
+  margin-bottom: 7.5vh;
 }
 </style>

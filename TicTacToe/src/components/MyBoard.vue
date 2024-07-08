@@ -1,7 +1,6 @@
-
-<!-- Export default this component -->
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
 const board = ref([
     ['', '', ''],
     ['', '', ''],
@@ -9,14 +8,15 @@ const board = ref([
 ])
 
 const currentPlayer = ref('X')
+const winningLine = ref(null)
 
 function clearBoard() {
     board.value = [
         ['', '', ''],
-        ['', '', ''],
         ['', '', '']
     ]
     currentPlayer.value = 'X'
+    winningLine.value = null
 
     console.log(board.value)
 }
@@ -25,24 +25,24 @@ function checkWinner() {
     // Check rows
     for (let i = 0; i < 3; i++) {
         if (board.value[i][0] === board.value[i][1] && board.value[i][1] === board.value[i][2] && board.value[i][0] !== '') {
-            return board.value[i][0]
+            return { player: board.value[i][0], line: [[i, 0], [i, 1], [i, 2]] }
         }
     }
 
     // Check columns
     for (let i = 0; i < 3; i++) {
         if (board.value[0][i] === board.value[1][i] && board.value[1][i] === board.value[2][i] && board.value[0][i] !== '') {
-            return board.value[0][i]
+            return { player: board.value[0][i], line: [[0, i], [1, i], [2, i]] }
         }
     }
 
     // Check diagonals
     if (board.value[0][0] === board.value[1][1] && board.value[1][1] === board.value[2][2] && board.value[0][0] !== '') {
-        return board.value[0][0]
+        return { player: board.value[0][0], line: [[0, 0], [1, 1], [2, 2]] }
     }
 
     if (board.value[0][2] === board.value[1][1] && board.value[1][1] === board.value[2][0] && board.value[0][2] !== '') {
-        return board.value[0][2]
+        return { player: board.value[0][2], line: [[0, 2], [1, 1], [2, 0]] }
     }
 
     return null
@@ -75,16 +75,16 @@ function handleClick(row, cell) {
 
     // Check if there is a winner after each move is put on the board template
     const winner = checkWinner()
-    if (winner) {    
+    if (winner) {
+        winningLine.value = winner.line
         setTimeout(() => {
-                alert(`Player ${winner} wins!`)
-                clearBoard()
+            alert(`Player ${winner.player} wins!`)
+            clearBoard()
         }, 1000);
     }
 
-
     // Check if the board is full
-    isFull = checkBoardFull()
+    const isFull = checkBoardFull()
     if (isFull && !winner) {
         setTimeout(() => {
             alert('The game is a draw!')
@@ -93,6 +93,56 @@ function handleClick(row, cell) {
     }
 }
 
+const lineStyle = computed(() => {
+    if (!winningLine.value) return {}
+    const start= winningLine.value[0]
+    const end = winningLine.value[2]
+    const [startRow, startCol] = start
+    const [endRow, endCol] = end
+    const isRow = startRow === endRow // Check if the start and end row are the same
+    const isCol = startCol === endCol // Check if the start and end column are the same
+
+    console.log(startRow, startCol, endRow, endCol)
+    // Check if the line is diagonal from top-left to bottom-right
+    const isDiagonal = startRow === 0 && startCol === 0 && endRow === 2 && endCol === 2
+    // Check if the line is diagonal from top-right to bottom-left
+    const isAntiDiagonal = startRow === 0 && startCol === 2 && endRow === 2 && endCol === 0
+
+    if (isRow) {
+        return {
+            top: `${startRow * 33.3 + 16.5}%`,
+            left: '0',
+            transform: 'none',
+            width: '100%',
+            height: '5px'
+        }
+    } else if (isCol) {
+        return {
+            top: '0',
+            left: `${startCol * 33.3 + 16.5}%`,
+            width: '5px',
+            height: '100%',
+        }
+    }
+    else if (isDiagonal) {
+        return {
+            top: '0',
+            left: '50%',
+            height: '100%',
+            width: '5px',
+            transform: 'rotate(-45deg)'
+        }
+    }
+    else if (isAntiDiagonal) {
+        return {
+            top: '0',
+            right: `50%`,
+            height: '100%',
+            width: '5px',
+            transform: 'rotate(45deg)'
+        }
+    }
+})
 </script>
 
 <template>
@@ -101,10 +151,14 @@ function handleClick(row, cell) {
             <div class="row" v-for="row in 3" :key="row">
                 <div class="cell" v-for="cell in 3" :key="cell" @click="handleClick(row, cell)">
                     <div class="cell-inner">
-                        <span class="cell-content">{{ board[row-1][cell-1] }}</span>
+                        <!-- X - blue color -->
+                        <!-- O - red color -->
+                        <span class="cell-content" :style="{ color: board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">{{
+                            board[row - 1][cell - 1] }}</span>
                     </div>
                 </div>
             </div>
+            <div v-if="winningLine" class="winner-line" :style="lineStyle"></div>
         </div>
         <div class="status">
             <div class="status-inner">
@@ -127,8 +181,7 @@ function handleClick(row, cell) {
 }
 
 .board {
-    margin-top: 7.5vh;
-    margin-bottom: 2.5vh;
+    position: relative;
     display: flex;
     flex-direction: column;
     border: 1px solid #000;
@@ -139,8 +192,8 @@ function handleClick(row, cell) {
 }
 
 .cell {
-    width: 15vh;
-    height: 15vh;
+    width: 13vw;
+    height: 13vw;
     border: 3px solid #000;
 }
 
@@ -158,7 +211,7 @@ function handleClick(row, cell) {
 }
 
 .status {
-    margin-top: 20px;
+    margin-top: 3vh;
 }
 
 .status-inner {
@@ -181,5 +234,12 @@ function handleClick(row, cell) {
 .restart-button {
     padding: 10px 20px;
     font-size: 1.5rem;
+}
+
+.winner-line {
+    position: absolute;
+    background-color: yellow;
+    height: 5px;
+    z-index: 1;
 }
 </style>
