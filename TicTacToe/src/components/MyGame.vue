@@ -26,10 +26,10 @@ function clearBoard() {
 }
 
 function timeout_func(custom_msg) {
-    setTimeout(() => {
-        alert(custom_msg)
-        clearBoard()
-    }, 1000);
+    // setTimeout(() => {
+    //     alert(custom_msg)
+    //     clearBoard()
+    // }, 1000);
 }
 
 // function checkWinner() {
@@ -194,8 +194,6 @@ const lineStyle = computed(() => {
     const end = winningLine.value[2]
     const [startRow, startCol] = start
     const [endRow, endCol] = end
-    const numRows = board.value.length
-    const numCols = board.value[0].length
     const isRow = startRow === endRow // Check if the start and end row are the same
     const isCol = startCol === endCol // Check if the start and end column are the same
 
@@ -209,17 +207,19 @@ const lineStyle = computed(() => {
 
     if (isRow) {
         lineType.value = "isRow"
+        console.log(startRow * (100 / numRows.value) + (100 / (numRows.value * 2)))
+        console.log(numRows.value, numColumns.value)
         return {
-            top: `${(startRow + 0.5) * (100 / numRows)}%`,
-            width: '100%',
-            transform: 'none'
+            top: `${startRow * (100 / numRows.value) + (100 / (numRows.value * 2))}%`,
+            left: `${startCol * (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
+            width: `${(100 / numColumns.value) * 2}%`,
         }
     } else if (isCol) {
         lineType.value = "isCol"
         return {
-            left: `${(startCol + 0.5) * (100 / numCols)}%`,
-            height: '100%',
-            transform: 'none'
+            top: `${startRow * (100 / numRows.value) + (100 / (numRows.value * 2))}%`,
+            left: `${startCol * (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
+            height: `${(100 / numRows.value) * 2}%`,
         }
     }
     else if (isDiagonal) {
@@ -346,15 +346,11 @@ const lineStyle = computed(() => {
 }
 
 .winner-line.isRow {
-    left: 0;
-    width: 100%;
     height: 5px;
 }
 
 .winner-line.isCol {
     width: 5px;
-    height: 100%;
-    top: 0;
 }
 
 .winner-line.isDiagonal {
