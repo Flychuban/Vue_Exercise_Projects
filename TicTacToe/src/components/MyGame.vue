@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { every } from 'lodash'
+import { sqrt } from 'mathjs'
+
 
 const {settings} = defineProps(['settings'])
 
@@ -26,17 +28,23 @@ function clearBoard() {
 }
 
 function timeout_func(custom_msg) {
-    setTimeout(() => {
-        alert(custom_msg)
-        clearBoard()
-    }, 1000);
+    // setTimeout(() => {
+    //     alert(custom_msg)
+    //     clearBoard()
+    // }, 1000);
 }
 
 const adjustCellsDimensions = computed(() => {
-    return {
-        width: `${80 / numColumns.value}vw`,
-        height: `${80 / numRows.value}vh`
-    }
+    if (numRows.value < numColumns.value)
+        return {
+            width: `${80 / numColumns.value}vw`,
+            height: `${80 / numColumns.value}vw`
+        }
+    else
+        return {
+            width: `${80 / numRows.value}vw`,
+            height: `${80 / numRows.value}vw`
+        }
 })
 
 // function checkWinner() {
@@ -231,24 +239,27 @@ const lineStyle = computed(() => {
     }
     else if (isDiagonal) {
         lineType.value = "isDiagonal"
+        const y_diff = sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3)) / 2
+        console.log(y_diff)
+        console.log("Diagonal")
+        console.log(sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3)))
+        console.log(((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3))
         return {
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            transform: 'rotate(-45deg)',
-            transformOrigin: 'top left'
+            top: `${startRow * (100 / numRows.value)}%`,
+            // left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
+            left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) * 1.5}%`,
+            // height: `${sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3))}%`,
+            height: `${(100 / numRows.value) * 3}%`,
         }
     }
     else if (isAntiDiagonal) {
         lineType.value = "isAntiDiagonal"
         return {
-            top: 0,
-            right: 0,
-            width: '100%',
-            height: '100%',
-            transform: 'rotate(45deg)',
-            transformOrigin: 'top right'
+            top: `${startRow * (100 / numRows.value)}%`,
+            // left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
+            left: `${startCol * (100 / numColumns.value) - (100 / numColumns.value) / 2}%`,
+            // height: `${sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3))}%`,
+            height: `${(100 / numRows.value) * 3}%`,
         }
     }
 })
@@ -351,24 +362,20 @@ const lineStyle = computed(() => {
 }
 
 .winner-line.isRow {
-    height: 5px;
+    height: 10px;
 }
 
 .winner-line.isCol {
-    width: 5px;
+    width: 10px;
 }
 
 .winner-line.isDiagonal {
-    height: 100%;
-    width: 5px;
-    top: 0;
-    left: 50%;
+    width: 10px;
+    transform: rotate(-45deg);
 }
 
 .winner-line.isAntiDiagonal {
-    height: 100%;
-    width: 5px;
-    top: 0;
-    left: 50%;
+    width: 10px;
+    transform: rotate(45deg);
 }
 </style>
