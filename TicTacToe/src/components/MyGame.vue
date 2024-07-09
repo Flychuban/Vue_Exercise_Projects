@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { every } from 'lodash'
-import { sqrt } from 'mathjs'
 
 
 const {settings} = defineProps(['settings'])
@@ -28,10 +27,10 @@ function clearBoard() {
 }
 
 function timeout_func(custom_msg) {
-    // setTimeout(() => {
-    //     alert(custom_msg)
-    //     clearBoard()
-    // }, 1000);
+    setTimeout(() => {
+        alert(custom_msg)
+        clearBoard()
+    }, 1000);
 }
 
 const adjustCellsDimensions = computed(() => {
@@ -47,32 +46,6 @@ const adjustCellsDimensions = computed(() => {
         }
 })
 
-// function checkWinner() {
-//     // Check rows
-//     for (let i = 0; i < 3; i++) {
-//         if (board.value[i][0] === board.value[i][1] && board.value[i][1] === board.value[i][2] && board.value[i][0] !== '') {
-//             return { player: board.value[i][0], line: [[i, 0], [i, 1], [i, 2]] }
-//         }
-//     }
-
-//     // Check columns
-//     for (let i = 0; i < 3; i++) {
-//         if (board.value[0][i] === board.value[1][i] && board.value[1][i] === board.value[2][i] && board.value[0][i] !== '') {
-//             return { player: board.value[0][i], line: [[0, i], [1, i], [2, i]] }
-//         }
-//     }
-
-//     // Check diagonals
-//     if (board.value[0][0] === board.value[1][1] && board.value[1][1] === board.value[2][2] && board.value[0][0] !== '') {
-//         return { player: board.value[0][0], line: [[0, 0], [1, 1], [2, 2]] }
-//     }
-
-//     if (board.value[0][2] === board.value[1][1] && board.value[1][1] === board.value[2][0] && board.value[0][2] !== '') {
-//         return { player: board.value[0][2], line: [[0, 2], [1, 1], [2, 0]] }
-//     }
-
-//     return null
-// }
 
 function checkWinner(board, numRows, numCols) {
     // Check rows
@@ -160,48 +133,6 @@ function handleClick(row, cell) {
     }
 }
 
-// const lineStyle = computed(() => {
-//     if (!winningLine.value) return {}
-//     const start = winningLine.value[0]
-//     const end = winningLine.value[2]
-//     const [startRow, startCol] = start
-//     const [endRow, endCol] = end
-//     const isRow = startRow === endRow // Check if the start and end row are the same
-//     const isCol = startCol === endCol // Check if the start and end column are the same
-
-//     console.log(startRow, startCol, endRow, endCol)
-//     // Check if the line is diagonal from top-left to bottom-right
-//     const isDiagonal = startRow === 0 && startCol === 0 && endRow === 2 && endCol === 2
-//     // Check if the line is diagonal from top-right to bottom-left
-//     const isAntiDiagonal = startRow === 0 && startCol === 2 && endRow === 2 && endCol === 0
-
-//     const isDiagonal
-
-//     if (isRow) {
-//         lineType.value = "isRow"
-//         return {
-//             top: `${startRow * 33.3 + 16.5}%`,
-//         }
-//     } else if (isCol) {
-//         lineType.value = "isCol"
-//         return {
-//             left: `${startCol * 33.3 + 16.5}%`,
-//         }
-//     }
-//     else if (isDiagonal) {
-//         lineType.value = "isDiagonal"
-//         return {
-//             transform: 'rotate(-45deg)'
-//         }
-//     }
-//     else if (isAntiDiagonal) {
-//         lineType.value = "isAntiDiagonal"
-//         return {
-//             transform: 'rotate(45deg)'
-//         }
-//     }
-// })
-
 
 const lineStyle = computed(() => {
     if (!winningLine.value) return {}
@@ -246,9 +177,7 @@ const lineStyle = computed(() => {
         console.log(((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3))
         return {
             top: `${startRow * (100 / numRows.value)}%`,
-            // left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
             left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) * 1.5}%`,
-            // height: `${sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3))}%`,
             height: `${(100 / numRows.value) * 3}%`,
         }
     }
@@ -256,9 +185,7 @@ const lineStyle = computed(() => {
         lineType.value = "isAntiDiagonal"
         return {
             top: `${startRow * (100 / numRows.value)}%`,
-            // left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
             left: `${startCol * (100 / numColumns.value) - (100 / numColumns.value) / 2}%`,
-            // height: `${sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3))}%`,
             height: `${(100 / numRows.value) * 3}%`,
         }
     }
