@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { every } from 'lodash'
 
+const emitShowSettings = defineEmits(['show-settings'])
 
 const {settings} = defineProps(['settings'])
 
@@ -19,11 +20,13 @@ function initGame(numRows, numColumns) {
     currentPlayer.value = 'X'
 }
 
+function changeGameSettings() {
+    emitShowSettings('show-settings')
+}
+
 function clearBoard() {
     initGame(numRows.value, numColumns.value)
     winningLine.value = null
-
-    console.log(board.value)
 }
 
 function timeout_func(custom_msg) {
@@ -97,7 +100,6 @@ function checkWinner(board, numRows, numCols) {
 
 
 
-
 function checkBoardFull() {
     // Check if the board  values are not empty
     return every(board.value, row => every(row, cell => cell !== ''))
@@ -113,10 +115,6 @@ function handleClick(row, cell) {
 
     board.value[row][cell] = currentPlayer.value
     currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X'
-
-    console.log(row, cell)
-    console.log(board.value)
-
 
     // Check if there is a winner after each move is put on the board template
     const winner = checkWinner(board, numRows.value, numColumns.value)
@@ -143,7 +141,6 @@ const lineStyle = computed(() => {
     const isRow = startRow === endRow // Check if the start and end row are the same
     const isCol = startCol === endCol // Check if the start and end column are the same
 
-    console.log(startRow, startCol, endRow, endCol)
 
     // Check if the line is diagonal from top-left to bottom-right
     const isDiagonal = (endRow - startRow === endCol - startCol) && (startRow <= endRow) && (startCol <= endCol)
@@ -153,8 +150,6 @@ const lineStyle = computed(() => {
 
     if (isRow) {
         lineType.value = "isRow"
-        console.log(startRow * (100 / numRows.value) + (100 / (numRows.value * 2)))
-        console.log(numRows.value, numColumns.value)
         return {
             top: `${startRow * (100 / numRows.value) + (100 / (numRows.value * 2))}%`,
             left: `${startCol * (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
@@ -170,11 +165,6 @@ const lineStyle = computed(() => {
     }
     else if (isDiagonal) {
         lineType.value = "isDiagonal"
-        const y_diff = sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3)) / 2
-        console.log(y_diff)
-        console.log("Diagonal")
-        console.log(sqrt(((100 / numColumns.value) * 3) * ((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3) * ((100 / numRows.value) * 3)))
-        console.log(((100 / numColumns.value) * 3) + ((100 / numRows.value) * 3))
         return {
             top: `${startRow * (100 / numRows.value)}%`,
             left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) * 1.5}%`,
@@ -194,6 +184,7 @@ const lineStyle = computed(() => {
 </script>
 
 <template>
+    <button class="settings-button" @click="changeGameSettings">GO TO GameSettings</button>
     <div class="board-container">
         <div class="board">
             <div class="row" v-for="row in numRows" :key="row">
@@ -220,6 +211,14 @@ const lineStyle = computed(() => {
 </template>
 
 <style>
+.settings-button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    background-color: #000;
+    color: azure;
+}
+
 .board-container {
     display: flex;
     flex-direction: column;
@@ -280,6 +279,8 @@ const lineStyle = computed(() => {
 .restart-button {
     padding: 10px 20px;
     font-size: 1.5rem;
+    background-color: #000;
+    color: azure;
 }
 
 .winner-line {
