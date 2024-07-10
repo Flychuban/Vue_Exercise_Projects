@@ -7,7 +7,6 @@ import { useBoardStore } from '../stores/board_store'
 const settingsStore = useSettingsStore()
 
 const boardStore = useBoardStore()
-const board = boardStore.board
 
 
 // const board = ref([])
@@ -51,14 +50,14 @@ const adjustCellsDimensions = computed(() => {
 })
 
 
-function checkWinner(board, numRows, numCols) {
+function checkWinner(numRows, numCols) {
     // Check rows
     for (let i = 0; i < numRows; i++) {
         for (let j = 0; j <= numCols - 3; j++) {
-            if (board.value[i][j] === board.value[i][j + 1] &&
-                board.value[i][j + 1] === board.value[i][j + 2] &&
-                board.value[i][j] !== '') {
-                return { player: board.value[i][j], line: [[i, j], [i, j + 1], [i, j + 2]] }
+            if (boardStore.board[i][j] === boardStore.board[i][j + 1] &&
+                boardStore.board[i][j + 1] === boardStore.board[i][j + 2] &&
+                boardStore.board[i][j] !== '') {
+                return { player: boardStore.board[i][j], line: [[i, j], [i, j + 1], [i, j + 2]] }
             }
         }
     }
@@ -66,10 +65,10 @@ function checkWinner(board, numRows, numCols) {
     // Check columns
     for (let i = 0; i <= numRows - 3; i++) {
         for (let j = 0; j < numCols; j++) {
-            if (board.value[i][j] === board.value[i + 1][j] &&
-                board.value[i + 1][j] === board.value[i + 2][j] &&
-                board.value[i][j] !== '') {
-                return { player: board.value[i][j], line: [[i, j], [i + 1, j], [i + 2, j]] }
+            if (boardStore.board[i][j] === boardStore.board[i + 1][j] &&
+                boardStore.board[i + 1][j] === boardStore.board[i + 2][j] &&
+                boardStore.board[i][j] !== '') {
+                return { player: boardStore.board[i][j], line: [[i, j], [i + 1, j], [i + 2, j]] }
             }
         }
     }
@@ -77,10 +76,10 @@ function checkWinner(board, numRows, numCols) {
     // Check diagonals (top-left to bottom-right)
     for (let i = 0; i <= numRows - 3; i++) {
         for (let j = 0; j <= numCols - 3; j++) {
-            if (board.value[i][j] === board.value[i + 1][j + 1] &&
-                board.value[i + 1][j + 1] === board.value[i + 2][j + 2] &&
-                board.value[i][j] !== '') {
-                return { player: board.value[i][j], line: [[i, j], [i + 1, j + 1], [i + 2, j + 2]] }
+            if (boardStore.board[i][j] === boardStore.board[i + 1][j + 1] &&
+                boardStore.board[i + 1][j + 1] === boardStore.board[i + 2][j + 2] &&
+                boardStore.board[i][j] !== '') {
+                return { player: boardStore.board[i][j], line: [[i, j], [i + 1, j + 1], [i + 2, j + 2]] }
             }
         }
     }
@@ -88,10 +87,10 @@ function checkWinner(board, numRows, numCols) {
     // Check diagonals (top-right to bottom-left)
     for (let i = 0; i <= numRows - 3; i++) {
         for (let j = 2; j < numCols; j++) {
-            if (board.value[i][j] === board.value[i + 1][j - 1] &&
-                board.value[i + 1][j - 1] === board.value[i + 2][j - 2] &&
-                board.value[i][j] !== '') {
-                return { player: board.value[i][j], line: [[i, j], [i + 1, j - 1], [i + 2, j - 2]] }
+            if (boardStore.board[i][j] === boardStore.board[i + 1][j - 1] &&
+                boardStore.board[i + 1][j - 1] === boardStore.board[i + 2][j - 2] &&
+                boardStore.board[i][j] !== '') {
+                return { player: boardStore.board[i][j], line: [[i, j], [i + 1, j - 1], [i + 2, j - 2]] }
             }
         }
     }
@@ -103,7 +102,7 @@ function checkWinner(board, numRows, numCols) {
 
 function checkBoardFull() {
     // Check if the board  values are not empty
-    return every(board.value, row => every(row, cell => cell !== ''))
+    return every(boardStore.board, row => every(row, cell => cell !== ''))
 }
 
 function handleClick(row, cell) {
@@ -111,14 +110,14 @@ function handleClick(row, cell) {
     row--
     cell--
 
-    if (board.value[row][cell] !== '')
+    if (boardStore.board[row][cell] !== '')
         return
 
-    board.value[row][cell] = currentPlayer.value
+    boardStore.board[row][cell] = currentPlayer.value
     currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X'
 
     // Check if there is a winner after each move is put on the board template
-    const winner = checkWinner(board, settingsStore.numRows, settingsStore.numColumns)
+    const winner = checkWinner(settingsStore.numRows, settingsStore.numColumns)
     if (winner) {
         winningLine.value = winner.line
         timeout_func(`Player ${winner.player} wins!`)
@@ -193,8 +192,8 @@ const lineStyle = computed(() => {
                     <div class="cell-inner">
                         <!-- X - blue color -->
                         <!-- O - red color -->
-                        <span class="cell-content" :style="{ color: board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">{{
-                            board[row - 1][cell - 1] }}</span>
+                        <span class="cell-content" :style="{ color: boardStore.board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">{{
+                            boardStore.board[row - 1][cell - 1] }}</span>
                     </div>
                 </div>
             </div>

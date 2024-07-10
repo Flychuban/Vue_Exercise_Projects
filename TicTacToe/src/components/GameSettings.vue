@@ -9,16 +9,23 @@ onBeforeMount(() => {
     if(!localStorage.getItem('settings')) return
 
     const settings = JSON.parse(localStorage.getItem('settings'))
-    settingsStore.numRows = settings.rows
-    settingsStore.numColumns = settings.columns
+    settingsStore.initSettings(settings.rows, settings.columns)
 })
+
+function saveSettings() {
+    localStorage.setItem('settings', JSON.stringify({
+        rows: settingsStore.numRows,
+        columns: settingsStore.numColumns
+    }))
+    settingsStore.showSettings = false
+} 
 
 </script>
 
 
 <template>
     <div class="form-container">
-        <form @submit.prevent="settingsStore.showSettings = false">
+        <form @submit.prevent="saveSettings">
             <h2>Write down Tic Tac Toe Board dimensions</h2>
             <div class="form-inputs">
                 <label for="rows">Rows:</label>

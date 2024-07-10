@@ -15,6 +15,7 @@ onBeforeMount(() => {
   if(!localStorage.getItem('settings')) {
     settingsStore.showSettings = true
   } else {
+    console.log('Settings found in localStorage')
     settingsStore.initSettings()
   }
 })
@@ -27,7 +28,7 @@ onBeforeMount(() => {
 
     <!-- Conditionally render components based on settingsSubmitted -->
     <GameSettings v-if="settingsStore.showSettings"/>
-    <MyGame v-else />
+    <MyGame v-if="!settingsStore.showSettings" />
   </div>
 </template>
 
