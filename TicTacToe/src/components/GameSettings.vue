@@ -1,17 +1,26 @@
 <!-- Basic form for number of rows and columns that will be in the Tic Tac Toe -->
 <script setup>
-import { ref } from 'vue'
+import { ref, onBeforeMount} from 'vue'
 
 const emit = defineEmits(['change-settings'])
 
-const numRows = ref()
-const numColumns = ref()
+const numRows = ref(3)
+const numColumns = ref(3)
 
 function submitSettings() {
     console.log(numRows.value, numColumns.value)
     // Emit an event to the parent component with the number of rows and columns
     emit('change-settings', { rows: numRows.value, columns: numColumns.value })
 }
+
+
+onBeforeMount(() => {
+    if(localStorage.getItem('settings')) {
+        const settings = JSON.parse(localStorage.getItem('settings'))
+        numRows.value = settings.rows
+        numColumns.value = settings.columns
+    }
+})
 
 </script>
 

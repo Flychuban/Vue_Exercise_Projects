@@ -4,10 +4,11 @@
 import MyBoard from './components/MyBoard.vue'
 import MyGame from './components/MyGame.vue'
 import GameSettings from './components/GameSettings.vue'
+import { useBoardState } from './stores/board_state.js'
 
 import { ref, onBeforeMount } from 'vue'
 
-
+const boardState = useBoardState()
 
 const settings = ref(null)
 const settingsSubmitted = ref(false)
