@@ -1,31 +1,32 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { every } from 'lodash'
+import { useSettingsStore } from '../stores/settings_store'
+import { useBoardStore } from '../stores/board_store'
 
-const emitShowSettings = defineEmits(['show-settings'])
+const settingsStore = useSettingsStore()
 
-const {settings} = defineProps(['settings'])
+const boardStore = useBoardStore()
+const board = boardStore.board
 
-const numRows = ref(settings.rows)
-const numColumns = ref(settings.columns)
 
-const board = ref([])
+// const board = ref([])
 const currentPlayer = ref('')
 const winningLine = ref(null)
 const lineType = ref("")
-initGame(numRows.value, numColumns.value)
+initGame()
 
-function initGame(numRows, numColumns) {
-    board.value = Array.from({ length: numRows }, () => Array.from({ length: numColumns }, () => ''))
+function initGame() {
+    boardStore.initBoard(settingsStore.numRows, settingsStore.numColumns)
     currentPlayer.value = 'X'
 }
 
 function changeGameSettings() {
-    emitShowSettings('show-settings')
+    settingsStore.showSettings = true
 }
 
 function clearBoard() {
-    initGame(numRows.value, numColumns.value)
+    initGame(settingsStore.numRows, settingsStore.numColumns)
     winningLine.value = null
 }
 
@@ -37,15 +38,15 @@ function timeout_func(custom_msg) {
 }
 
 const adjustCellsDimensions = computed(() => {
-    if (numRows.value < numColumns.value)
+    if (settingsStore.numRows < settingsStore.numColumns)
         return {
-            width: `${80 / numColumns.value}vw`,
-            height: `${80 / numColumns.value}vw`
+            width: `${80 / settingsStore.numColumns}vw`,
+            height: `${80 / settingsStore.numColumns}vw`
         }
     else
         return {
-            width: `${80 / numRows.value}vw`,
-            height: `${80 / numRows.value}vw`
+            width: `${80 / settingsStore.numRows}vw`,
+            height: `${80 / settingsStore.numRows}vw`
         }
 })
 
@@ -117,7 +118,7 @@ function handleClick(row, cell) {
     currentPlayer.value = currentPlayer.value === 'X' ? 'O' : 'X'
 
     // Check if there is a winner after each move is put on the board template
-    const winner = checkWinner(board, numRows.value, numColumns.value)
+    const winner = checkWinner(board, settingsStore.numRows, settingsStore.numColumns)
     if (winner) {
         winningLine.value = winner.line
         timeout_func(`Player ${winner.player} wins!`)
@@ -151,32 +152,32 @@ const lineStyle = computed(() => {
     if (isRow) {
         lineType.value = "isRow"
         return {
-            top: `${startRow * (100 / numRows.value) + (100 / (numRows.value * 2))}%`,
-            left: `${startCol * (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
-            width: `${(100 / numColumns.value) * 2}%`,
+            top: `${startRow * (100 / settingsStore.numRows) + (100 / (settingsStore.numRows * 2))}%`,
+            left: `${startCol * (100 / settingsStore.numColumns) + (100 / (settingsStore.numColumns * 2))}%`,
+            width: `${(100 / settingsStore.numColumns) * 2}%`,
         }
     } else if (isCol) {
         lineType.value = "isCol"
         return {
-            top: `${startRow * (100 / numRows.value) + (100 / (numRows.value * 2))}%`,
-            left: `${startCol * (100 / numColumns.value) + (100 / (numColumns.value * 2))}%`,
-            height: `${(100 / numRows.value) * 2}%`,
+            top: `${startRow * (100 / settingsStore.numRows) + (100 / (settingsStore.numRows * 2))}%`,
+            left: `${startCol * (100 / settingsStore.numColumns) + (100 / (settingsStore.numColumns * 2))}%`,
+            height: `${(100 / settingsStore.numRows) * 2}%`,
         }
     }
     else if (isDiagonal) {
         lineType.value = "isDiagonal"
         return {
-            top: `${startRow * (100 / numRows.value)}%`,
-            left: `${startCol * (100 / numColumns.value) + (100 / numColumns.value) * 1.5}%`,
-            height: `${(100 / numRows.value) * 3}%`,
+            top: `${startRow * (100 / settingsStore.numRows)}%`,
+            left: `${startCol * (100 / settingsStore.numColumns) + (100 / settingsStore.numColumns) * 1.5}%`,
+            height: `${(100 / settingsStore.numRows) * 3}%`,
         }
     }
     else if (isAntiDiagonal) {
         lineType.value = "isAntiDiagonal"
         return {
-            top: `${startRow * (100 / numRows.value)}%`,
-            left: `${startCol * (100 / numColumns.value) - (100 / numColumns.value) / 2}%`,
-            height: `${(100 / numRows.value) * 3}%`,
+            top: `${startRow * (100 / settingsStore.numRows)}%`,
+            left: `${startCol * (100 / settingsStore.numColumns) - (100 / settingsStore.numColumns) / 2}%`,
+            height: `${(100 / settingsStore.numRows) * 3}%`,
         }
     }
 })
@@ -187,8 +188,8 @@ const lineStyle = computed(() => {
     <button class="settings-button" @click="changeGameSettings">GO TO GameSettings</button>
     <div class="board-container">
         <div class="board">
-            <div class="row" v-for="row in numRows" :key="row">
-                <div class="cell" v-for="cell in numColumns" :key="cell" :style="adjustCellsDimensions" @click="handleClick(row, cell)">
+            <div class="row" v-for="row in settingsStore.numRows" :key="row">
+                <div class="cell" v-for="cell in settingsStore.numColumns" :key="cell" :style="adjustCellsDimensions" @click="handleClick(row, cell)">
                     <div class="cell-inner">
                         <!-- X - blue color -->
                         <!-- O - red color -->

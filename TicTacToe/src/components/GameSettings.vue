@@ -1,25 +1,16 @@
 <!-- Basic form for number of rows and columns that will be in the Tic Tac Toe -->
 <script setup>
 import { ref, onBeforeMount} from 'vue'
+import { useSettingsStore } from '../stores/settings_store'
 
-const emit = defineEmits(['change-settings'])
-
-const numRows = ref(3)
-const numColumns = ref(3)
-
-function submitSettings() {
-    console.log(numRows.value, numColumns.value)
-    // Emit an event to the parent component with the number of rows and columns
-    emit('change-settings', { rows: numRows.value, columns: numColumns.value })
-}
-
+const settingsStore = useSettingsStore()
 
 onBeforeMount(() => {
-    if(localStorage.getItem('settings')) {
-        const settings = JSON.parse(localStorage.getItem('settings'))
-        numRows.value = settings.rows
-        numColumns.value = settings.columns
-    }
+    if(!localStorage.getItem('settings')) return
+
+    const settings = JSON.parse(localStorage.getItem('settings'))
+    settingsStore.numRows = settings.rows
+    settingsStore.numColumns = settings.columns
 })
 
 </script>
@@ -27,13 +18,19 @@ onBeforeMount(() => {
 
 <template>
     <div class="form-container">
-        <form @submit.prevent="submitSettings">
+        <form @submit.prevent="settingsStore.showSettings = false">
             <h2>Write down Tic Tac Toe Board dimensions</h2>
             <div class="form-inputs">
                 <label for="rows">Rows:</label>
-                <input type="number" id="rows" v-model="numRows" value="3" min="3" max="20" required>
+                <input type="number" id="rows" 
+                v-model="settingsStore.numRows" 
+                @input="settingsStore.numRows = parseInt($event.target.value)"
+                min="3" max="20" required>
                 <label for="columns">Columns:</label>
-                <input type="number" id="columns" v-model="numColumns" value="3" min="3" max="20" required>
+                <input type="number" id="columns" 
+                    v-model="settingsStore.numColumns" 
+                    @input="settingsStore.numColumns = parseInt($event.target.value)"
+                    min="3" max="20" required>
                 <button type="submit">Submit</button>
             </div>
         </form>

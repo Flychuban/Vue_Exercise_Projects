@@ -4,33 +4,20 @@
 import MyBoard from './components/MyBoard.vue'
 import MyGame from './components/MyGame.vue'
 import GameSettings from './components/GameSettings.vue'
-import { useBoardState } from './stores/board_state.js'
+import { onBeforeMount } from 'vue'
 
-import { ref, onBeforeMount } from 'vue'
+import { useSettingsStore } from './stores/settings_store' 
 
-const boardState = useBoardState()
-
-const settings = ref(null)
-const settingsSubmitted = ref(false)
+const settingsStore = useSettingsStore()
 
 // When the app is mounted (app init), check if there are settings in localStorage
 onBeforeMount(() => {
-  if(localStorage.getItem('settings')) {
-    settings.value = JSON.parse(localStorage.getItem('settings'))
-    settingsSubmitted.value = true
-  } 
+  if(!localStorage.getItem('settings')) {
+    settingsStore.showSettings = true
+  } else {
+    settingsStore.initSettings()
+  }
 })
-
-
-const handleSettingsChange = (newSettings) => {
-  localStorage.setItem('settings', JSON.stringify(newSettings))
-  settings.value = newSettings
-  settingsSubmitted.value = true
-}
-
-const changeShowSettings = () => {
-  settingsSubmitted.value = false
-}
 
 </script>
 
@@ -39,8 +26,8 @@ const changeShowSettings = () => {
     <h1>Tic Tac Toe</h1>
 
     <!-- Conditionally render components based on settingsSubmitted -->
-    <GameSettings v-if="!settingsSubmitted" @change-settings="handleSettingsChange"/>
-    <MyGame v-else :settings="settings" @show-settings="changeShowSettings"/>
+    <GameSettings v-if="settingsStore.showSettings"/>
+    <MyGame v-else />
   </div>
 </template>
 
