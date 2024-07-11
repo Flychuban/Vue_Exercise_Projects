@@ -1,8 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { every } from 'lodash'
 import { useSettingsStore } from '../stores/settings_store'
 import { useBoardStore } from '../stores/board_store'
+import { CellDimensionsType } from '../types/cellDimensionsType'
+import { LineStyleType } from '../types/lineStyleType'
 
 const settingsStore = useSettingsStore()
 
@@ -10,47 +12,47 @@ const boardStore = useBoardStore()
 
 
 // const board = ref([])
-const currentPlayer = ref('')
-const winningLine = ref(null)
-const lineType = ref("")
+const currentPlayer = ref<string>('')
+const winningLine = ref<[number, number][] | null>(null)
+const lineType = ref<string>("")
 initGame()
 
-function initGame() {
-    boardStore.initBoard(settingsStore.numRows, settingsStore.numColumns)
+function initGame() : void{
+    boardStore.initBoard()
     currentPlayer.value = 'X'
 }
 
-function changeGameSettings() {
+function changeGameSettings() : void{
     settingsStore.showSettings = true
 }
 
-function clearBoard() {
-    initGame(settingsStore.numRows, settingsStore.numColumns)
+function clearBoard() : void{
+    initGame()
     winningLine.value = null
 }
 
-function timeout_func(custom_msg) {
+function timeout_func(custom_msg: string) : void{
     setTimeout(() => {
         alert(custom_msg)
         clearBoard()
     }, 1000);
 }
 
-const adjustCellsDimensions = computed(() => {
+const adjustCellsDimensions = computed(() : CellDimensionsType => {
     if (settingsStore.numRows < settingsStore.numColumns)
         return {
-            width: `${80 / settingsStore.numColumns}vw`,
-            height: `${80 / settingsStore.numColumns}vw`
+            width: <string> `${80 / settingsStore.numColumns}vw`,
+            height: <string> `${80 / settingsStore.numColumns}vw`
         }
     else
         return {
-            width: `${80 / settingsStore.numRows}vw`,
-            height: `${80 / settingsStore.numRows}vw`
+            width: <string> `${80 / settingsStore.numRows}vw`,
+            height: <string> `${80 / settingsStore.numRows}vw`
         }
 })
 
 
-function checkWinner(numRows, numCols) {
+function checkWinner(numRows : number, numCols : number) : {player: string, line: [number, number][]} | null {  
     // Check rows
     for (let i = 0; i < numRows; i++) {
         for (let j = 0; j <= numCols - 3; j++) {
@@ -100,12 +102,12 @@ function checkWinner(numRows, numCols) {
 
 
 
-function checkBoardFull() {
+function checkBoardFull() : boolean {
     // Check if the board  values are not empty
-    return every(boardStore.board, row => every(row, cell => cell !== ''))
+    return every(boardStore.board, (row: string[]) => every(row, (cell: string) => cell !== ''))
 }
 
-function handleClick(row, cell) {
+function handleClick(row: number, cell: number) : void {
     // In range start from 1 so we need to decrement by 1
     row--
     cell--
@@ -132,7 +134,7 @@ function handleClick(row, cell) {
 }
 
 
-const lineStyle = computed(() => {
+const lineStyle = computed(() : LineStyleType | undefined => {
     if (!winningLine.value) return {}
     const start = winningLine.value[0]
     const end = winningLine.value[2]
@@ -151,32 +153,32 @@ const lineStyle = computed(() => {
     if (isRow) {
         lineType.value = "isRow"
         return {
-            top: `${startRow * (100 / settingsStore.numRows) + (100 / (settingsStore.numRows * 2))}%`,
-            left: `${startCol * (100 / settingsStore.numColumns) + (100 / (settingsStore.numColumns * 2))}%`,
-            width: `${(100 / settingsStore.numColumns) * 2}%`,
+            top: <string> `${startRow * (100 / settingsStore.numRows) + (100 / (settingsStore.numRows * 2))}%`,
+            left: <string> `${startCol * (100 / settingsStore.numColumns) + (100 / (settingsStore.numColumns * 2))}%`,
+            width: <string> `${(100 / settingsStore.numColumns) * 2}%`,
         }
     } else if (isCol) {
         lineType.value = "isCol"
         return {
-            top: `${startRow * (100 / settingsStore.numRows) + (100 / (settingsStore.numRows * 2))}%`,
-            left: `${startCol * (100 / settingsStore.numColumns) + (100 / (settingsStore.numColumns * 2))}%`,
-            height: `${(100 / settingsStore.numRows) * 2}%`,
+            top: <string> `${startRow * (100 / settingsStore.numRows) + (100 / (settingsStore.numRows * 2))}%`,
+            left: <string> `${startCol * (100 / settingsStore.numColumns) + (100 / (settingsStore.numColumns * 2))}%`,
+            height: <string> `${(100 / settingsStore.numRows) * 2}%`,
         }
     }
     else if (isDiagonal) {
         lineType.value = "isDiagonal"
         return {
-            top: `${startRow * (100 / settingsStore.numRows)}%`,
-            left: `${startCol * (100 / settingsStore.numColumns) + (100 / settingsStore.numColumns) * 1.5}%`,
-            height: `${(100 / settingsStore.numRows) * 3}%`,
+            top: <string> `${startRow * (100 / settingsStore.numRows)}%`,
+            left: <string> `${startCol * (100 / settingsStore.numColumns) + (100 / settingsStore.numColumns) * 1.5}%`,
+            height: <string> `${(100 / settingsStore.numRows) * 3}%`,
         }
     }
     else if (isAntiDiagonal) {
         lineType.value = "isAntiDiagonal"
         return {
-            top: `${startRow * (100 / settingsStore.numRows)}%`,
-            left: `${startCol * (100 / settingsStore.numColumns) - (100 / settingsStore.numColumns) / 2}%`,
-            height: `${(100 / settingsStore.numRows) * 3}%`,
+            top: <string>`${startRow * (100 / settingsStore.numRows)}%`,
+            left: <string> `${startCol * (100 / settingsStore.numColumns) - (100 / settingsStore.numColumns) / 2}%`,
+            height: <string> `${(100 / settingsStore.numRows) * 3}%`,
         }
     }
 })
@@ -192,12 +194,11 @@ const lineStyle = computed(() => {
                     <div class="cell-inner">
                         <!-- X - blue color -->
                         <!-- O - red color -->
-                        <span class="cell-content" :style="{ color: boardStore.board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">{{
-                            boardStore.board[row - 1][cell - 1] }}</span>
+                        <span class="cell-content" :style="{ color: boardStore.board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">{{ boardStore.board[row - 1][cell - 1] }}</span>
                     </div>
                 </div>
             </div>
-            <div v-if="winningLine" class="winner-line" :style="lineStyle" :class="lineType"></div>
+            <div v-if="winningLine" class="winner-line" :style="lineStyle || {}" :class="lineType || ''"></div>
         </div>
         <div class="status">
             <div class="status-inner">

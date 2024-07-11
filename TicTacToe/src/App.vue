@@ -1,7 +1,6 @@
 <!-- Tic Tac Toe game -->
 
-<script setup>
-import MyBoard from './components/MyBoard.vue'
+<script setup lang="ts">
 import MyGame from './components/MyGame.vue'
 import GameSettings from './components/GameSettings.vue'
 import { onBeforeMount } from 'vue'
@@ -11,7 +10,7 @@ import { useSettingsStore } from './stores/settings_store'
 const settingsStore = useSettingsStore()
 
 // When the app is mounted (app init), check if there are settings in localStorage
-onBeforeMount(() => {
+onBeforeMount(() :void => {
   if(!localStorage.getItem('settings')) {
     settingsStore.showSettings = true
   } else {

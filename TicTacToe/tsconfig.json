@@ -14,7 +14,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client", "lodash"],
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "exclude": ["node_modules", "dist"]
