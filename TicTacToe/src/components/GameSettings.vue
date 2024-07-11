@@ -1,18 +1,16 @@
 <!-- Basic form for number of rows and columns that will be in the Tic Tac Toe -->
-<script setup>
-import { ref, onBeforeMount} from 'vue'
+<script setup lang="ts">
+import { onBeforeMount} from 'vue'
 import { useSettingsStore } from '../stores/settings_store'
 
 const settingsStore = useSettingsStore()
 
-onBeforeMount(() => {
+onBeforeMount(() :void => {
     if(!localStorage.getItem('settings')) return
-
-    const settings = JSON.parse(localStorage.getItem('settings'))
-    settingsStore.initSettings(settings.rows, settings.columns)
+    settingsStore.initSettings()
 })
 
-function saveSettings() {
+function saveSettings() :void {
     localStorage.setItem('settings', JSON.stringify({
         rows: settingsStore.numRows,
         columns: settingsStore.numColumns
@@ -31,12 +29,12 @@ function saveSettings() {
                 <label for="rows">Rows:</label>
                 <input type="number" id="rows" 
                 v-model="settingsStore.numRows" 
-                @input="settingsStore.numRows = parseInt($event.target.value)"
+                @input="settingsStore.numRows = parseInt(($event.target as HTMLInputElement).value)"
                 min="3" max="20" required>
                 <label for="columns">Columns:</label>
                 <input type="number" id="columns" 
                     v-model="settingsStore.numColumns" 
-                    @input="settingsStore.numColumns = parseInt($event.target.value)"
+                    @input="settingsStore.numColumns = parseInt(($event.target as HTMLInputElement).value)"
                     min="3" max="20" required>
                 <button type="submit">Submit</button>
             </div>
