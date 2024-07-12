@@ -5,10 +5,12 @@ import { useSettingsStore } from '../stores/settings_store'
 import { useBoardStore } from '../stores/board_store'
 import { CellDimensionsType } from '../types/cellDimensionsType'
 import { LineStyleType } from '../types/lineStyleType'
+import { useRouter } from 'vue-router'
 
 const settingsStore = useSettingsStore()
-
 const boardStore = useBoardStore()
+
+const router = useRouter()
 
 
 // const board = ref([])
@@ -24,6 +26,7 @@ function initGame() : void{
 
 function changeGameSettings() : void{
     settingsStore.showSettings = true
+    router.push('/settings'); // Navigate to the settings page
 }
 
 function clearBoard() : void{

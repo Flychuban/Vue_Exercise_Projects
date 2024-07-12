@@ -2,8 +2,10 @@
 <script setup lang="ts">
 import { onBeforeMount} from 'vue'
 import { useSettingsStore } from '../stores/settings_store'
+import { useRouter } from 'vue-router'
 
 const settingsStore = useSettingsStore()
+const router = useRouter()
 
 onBeforeMount(() :void => {
     if(!localStorage.getItem('settings')) return
@@ -16,6 +18,7 @@ function saveSettings() :void {
         columns: settingsStore.numColumns
     }))
     settingsStore.showSettings = false
+    router.push('/game') // Navigate to the game page
 } 
 
 </script>
