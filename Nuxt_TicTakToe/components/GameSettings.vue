@@ -22,6 +22,7 @@ function saveSettings(): void {
 </script>
 
 <template>
+    <h1>Tic Tak Toe</h1>
     <div class="form-container">
         <form @submit.prevent="saveSettings">
             <h2>Write down Tic Tac Toe Board dimensions</h2>
@@ -46,6 +47,11 @@ function saveSettings(): void {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+h1 {
+    font-size: 4rem;
+    margin-bottom: 7.5vh;
 }
 
 h2 {
