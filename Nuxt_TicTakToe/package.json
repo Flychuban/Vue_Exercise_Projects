@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "lodash": "^4.17.21",
     "nuxt": "^3.12.3",
+    "pinia": "^2.1.7",
     "vue": "latest"
   }
 }
