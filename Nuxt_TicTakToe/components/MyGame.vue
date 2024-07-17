@@ -125,7 +125,7 @@ function handleClick(row: number, cell: number): void {
     const winner = checkWinner(settingsStore.numRows, settingsStore.numColumns)
     if (winner) {
         winningLine.value = winner.line
-        timeout_func(`Player ${winner.player} wins!`)
+        timeout_func(`${winner.player === "X" ? settingsStore.player1_name : settingsStore.player2_name} wins!`)
         return
     }
 
@@ -209,7 +209,7 @@ const lineStyle = computed((): LineStyleType | undefined => {
         </div>
         <div class="status">
             <div class="status-inner">
-                <span class="status-content">Next player: {{ currentPlayer }}</span>
+                <span class="status-content">Next player: {{ currentPlayer === 'X' ? settingsStore.player1_name : settingsStore.player2_name }}</span>
             </div>
         </div>
         <div class="restart">
