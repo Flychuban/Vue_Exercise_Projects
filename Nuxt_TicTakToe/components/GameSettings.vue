@@ -14,7 +14,7 @@ onBeforeMount((): void => {
     settingsStore.initSettings()
 })
 
-function validateRows() {
+function validateRows() : void {
     const value = settingsStore.numRows
     if (value <= 3) {
         rowErrorMessage.value = 'Rows cannot be less than 3.'
@@ -25,7 +25,7 @@ function validateRows() {
     }
 }
 
-function validateColumns() {
+function validateColumns() : void {
     const value = settingsStore.numColumns
     if (value <= 3) {
         columnErrorMessage.value = 'Columns cannot be less than 3.'
@@ -36,9 +36,68 @@ function validateColumns() {
     }
 }
 
+function validatePlayerNames() : boolean {
+    const my_regex = /^[a-zA-Z\s]*$/
+
+    const player1_name = settingsStore.player1_name
+    const player2_name = settingsStore.player2_name
+    if(player1_name === player2_name){
+        alert('Player names cannot be the same')
+        settingsStore.player1_name = 'X'
+        settingsStore.player2_name = 'O'
+
+        return false
+    }
+
+    if (player1_name === '') {
+        alert('Player names cannot be empty')
+        settingsStore.player1_name = 'X'
+
+        return false
+    }
+    
+    if (player2_name === '') {
+        alert('Player names cannot be empty')
+        settingsStore.player2_name = 'O'
+
+        return false
+    }
+
+    if (player1_name.length > 40) {
+        alert('Player names cannot be more than 40 characters')
+        settingsStore.player1_name = 'X'
+
+        return false
+    }
+
+    if (player2_name.length > 40) {
+        alert('Player names cannot be more than 40 characters')
+        settingsStore.player2_name = 'O'
+
+        return false
+    }
+
+    if (player1_name.match(my_regex) == null) {
+        alert('Player names can only contain letters and spaces')
+        settingsStore.player1_name = 'X'
+
+        return false
+    }
+
+    if (player2_name.match(my_regex) == null) {
+        alert('Player names can only contain letters and spaces')
+        settingsStore.player2_name = 'O'
+
+        return false
+    }
+
+    return true
+}
 
 function saveSettings(): void {
     if (rowErrorMessage.value || columnErrorMessage.value) return
+
+    if (!validatePlayerNames()) return
     localStorage.setItem('settings', JSON.stringify({
         rows: settingsStore.numRows,
         columns: settingsStore.numColumns,
@@ -69,12 +128,10 @@ function saveSettings(): void {
                 <span v-if="columnErrorMessage" class="error-message-columns">{{ columnErrorMessage }}</span>
                 <br>
                 <label for="player1_name">Player X Name:</label>
-                <input class="name-input" type="text" id="player1_name" v-model="settingsStore.player1_name"
-                    required>
+                <input class="name-input" type="text" id="player1_name" v-model="settingsStore.player1_name" required>
                 <br>
                 <label for="player2_name">Player O Name:</label>
-                <input class="name-input" type="text" id="player2_name" v-model="settingsStore.player2_name"
-                    required>
+                <input class="name-input" type="text" id="player2_name" v-model="settingsStore.player2_name" required>
                 <button type="submit">Submit</button>
             </div>
         </form>
