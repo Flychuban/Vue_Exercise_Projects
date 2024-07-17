@@ -1,17 +1,44 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useSettingsStore } from '../store/settings_store'
 import { useRouter } from 'vue-router'
 
 const settingsStore = useSettingsStore()
 const router = useRouter()
 
+const rowErrorMessage = ref<string>('')
+const columnErrorMessage = ref<string>('')
+
 onBeforeMount((): void => {
     if (!localStorage.getItem('settings')) return
     settingsStore.initSettings()
 })
 
+function validateRows() {
+    const value = settingsStore.numRows
+    if (value <= 3) {
+        rowErrorMessage.value = 'Rows cannot be less than 3.'
+    } else if (value >= 20) {
+        rowErrorMessage.value = 'Rows cannot be more than 20.'
+    } else {
+        rowErrorMessage.value = ''
+    }
+}
+
+function validateColumns() {
+    const value = settingsStore.numColumns
+    if (value <= 3) {
+        columnErrorMessage.value = 'Columns cannot be less than 3.'
+    } else if (value >= 20) {
+        columnErrorMessage.value = 'Columns cannot be more than 20.'
+    } else {
+        columnErrorMessage.value = ''
+    }
+}
+
+
 function saveSettings(): void {
+    if (rowErrorMessage.value || columnErrorMessage.value) return
     localStorage.setItem('settings', JSON.stringify({
         rows: settingsStore.numRows,
         columns: settingsStore.numColumns
@@ -29,12 +56,14 @@ function saveSettings(): void {
             <div class="form-inputs">
                 <label for="rows">Rows:</label>
                 <input type="number" id="rows" v-model="settingsStore.numRows"
-                    @input="settingsStore.numRows = parseInt(($event.target as HTMLInputElement).value)" min="3" max="20"
+                    @input="validateRows" min="3" max="20"
                     required>
+                <span v-if="rowErrorMessage" class="error-message-rows">{{ rowErrorMessage }}</span>
                 <label for="columns">Columns:</label>
                 <input type="number" id="columns" v-model="settingsStore.numColumns"
-                    @input="settingsStore.numColumns = parseInt(($event.target as HTMLInputElement).value)" min="3" max="20"
+                    @input="validateColumns" min="3" max="20"
                     required>
+                <span v-if="columnErrorMessage" class="error-message-columns">{{ columnErrorMessage }}</span>
                 <button type="submit">Submit</button>
             </div>
         </form>
@@ -84,5 +113,19 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.error-message-rows {
+    position: absolute;
+    color: red;
+    font-size: 1.25em;
+    transform: translate(-7.5vw, 5vh);
+}
+
+.error-message-columns {
+    position: absolute;
+    color: red;
+    font-size: 1.25em;
+    transform: translate(7.5vw, 5vh);
 }
 </style>
