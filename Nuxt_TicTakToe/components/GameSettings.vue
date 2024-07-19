@@ -16,10 +16,12 @@ onBeforeMount((): void => {
 
 function validateRows() : void {
     const value = settingsStore.numRows
-    if (value <= 3) {
+    if (value < 3) {
         rowErrorMessage.value = 'Rows cannot be less than 3.'
-    } else if (value >= 20) {
+        settingsStore.numRows = 3
+    } else if (value > 20) {
         rowErrorMessage.value = 'Rows cannot be more than 20.'
+        settingsStore.numRows = 20
     } else {
         rowErrorMessage.value = ''
     }
@@ -27,10 +29,12 @@ function validateRows() : void {
 
 function validateColumns() : void {
     const value = settingsStore.numColumns
-    if (value <= 3) {
+    if (value < 3) {
         columnErrorMessage.value = 'Columns cannot be less than 3.'
-    } else if (value >= 20) {
+        settingsStore.numColumns = 3
+    } else if (value > 20) {
         columnErrorMessage.value = 'Columns cannot be more than 20.'
+        settingsStore.numColumns = 20
     } else {
         columnErrorMessage.value = ''
     }
