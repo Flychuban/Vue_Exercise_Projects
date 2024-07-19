@@ -1,5 +1,5 @@
-import { mount, shallowMount } from '@vue/test-utils'
-import MyGame from '../MyGame.vue'
+import { mount, shallowMount } from "@vue/test-utils"
+import MyGame from "../MyGame.vue"
 import { createTestingPinia } from '@pinia/testing'
 import { useSettingsStore } from '../../store/settings_store'
 import { useBoardStore } from '../../store/board_store'
