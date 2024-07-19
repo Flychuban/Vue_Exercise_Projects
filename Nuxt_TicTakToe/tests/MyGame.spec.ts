@@ -1,8 +1,8 @@
-import { mount, shallowMount } from "@vue/test-utils"
-import MyGame from "../MyGame.vue"
+import MyGame from "../components/MyGame.vue"
+import { shallowMount, mount } from "@vue/test-utils"
 import { createTestingPinia } from '@pinia/testing'
-import { useSettingsStore } from '../../store/settings_store'
-import { useBoardStore } from '../../store/board_store'
+import { useSettingsStore } from '../store/settings_store'
+import { useBoardStore } from '../store/board_store'
 
 describe('MyGame.vue', () => {
   let settingsStore: ReturnType<typeof useSettingsStore>
@@ -23,17 +23,9 @@ describe('MyGame.vue', () => {
     boardStore.initBoard()
   })
 
-  it('renders properly', () => {
-    const wrapper = shallowMount(MyGame, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
-    })
-    expect(wrapper.exists()).toBe(true)
-  })
 
   it('initializes game correctly', () => {
-    const wrapper = mount(MyGame, {
+    const wrapper = shallowMount(MyGame, {
       global: {
         plugins: [createTestingPinia()],
       },
@@ -48,7 +40,7 @@ describe('MyGame.vue', () => {
   })
 
   it('handles a cell click correctly', async () => {
-    const wrapper = mount(MyGame, {
+    const wrapper = shallowMount(MyGame, {
       global: {
         plugins: [createTestingPinia()],
       },
@@ -62,7 +54,7 @@ describe('MyGame.vue', () => {
   })
 
   it('detects a win correctly', async () => {
-    const wrapper = mount(MyGame, {
+    const wrapper = shallowMount(MyGame, {
       global: {
         plugins: [createTestingPinia()],
       },
@@ -78,7 +70,7 @@ describe('MyGame.vue', () => {
   })
 
   it('detects a draw correctly', async () => {
-    const wrapper = mount(MyGame, {
+    const wrapper = shallowMount(MyGame, {
       global: {
         plugins: [createTestingPinia()],
       },

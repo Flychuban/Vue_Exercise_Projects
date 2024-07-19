@@ -16,5 +16,12 @@
     "strictNullChecks": false,
     "types": ["node", "vue", "jest"],
   },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
   "exclude": ["node_modules"]
 }
