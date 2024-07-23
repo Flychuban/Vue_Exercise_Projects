@@ -14,14 +14,7 @@
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
-    "types": ["node", "vue", "jest"],
+    "types": ["node", "vue"]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
-  ],
   "exclude": ["node_modules"]
 }
