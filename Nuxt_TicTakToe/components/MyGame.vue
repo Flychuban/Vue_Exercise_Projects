@@ -7,6 +7,7 @@ import type { LineStyleType } from '../types/lineStyleType'
 import { useRouter } from 'vue-router'
 import { every } from 'lodash'
 
+
 const settingsStore = useSettingsStore()
 const boardStore = useBoardStore()
 
