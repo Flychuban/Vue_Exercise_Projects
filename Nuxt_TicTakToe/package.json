@@ -1,1 +1,26 @@
-{"name":"nuxt-app","private":true,"type":"module","scripts":{"build":"nuxt build","dev":"nuxt dev","generate":"nuxt generate","preview":"nuxt preview","postinstall":"nuxt prepare"},"dependencies":{"@pinia/nuxt":"^0.5.1","lodash":"^4.17.21","nuxt":"^3.12.3","pinia":"^2.1.7","vue":"latest","vue-tsc":"^2.0.26"},"devDependencies":{"@nuxt/typescript-build":"^3.0.2","@types/lodash":"^4.17.7","typescript":"^5.5.3","vite-plugin-checker":"^0.7.2"}}
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "lodash": "^4.17.21",
+    "nuxt": "^3.12.3",
+    "pinia": "^2.1.7",
+    "vue": "latest",
+    "vue-tsc": "^2.0.26"
+  },
+  "devDependencies": {
+    "@nuxt/typescript-build": "^3.0.2",
+    "@types/lodash": "^4.17.7",
+    "typescript": "^5.5.3",
+    "vite-plugin-checker": "^0.7.2"
+  }
+}
