@@ -106,6 +106,7 @@ function checkWinner(numRows: number, numCols: number): { player: string, line: 
 
 
 
+
 function checkBoardFull(): boolean {
     // Check if the board  values are not empty
     return every(boardStore.board, (row: string[]) => every(row, (cell: string) => cell !== ''))
@@ -200,9 +201,10 @@ const lineStyle = computed((): LineStyleType | undefined => {
                     <div class="cell-inner">
                         <!-- X - blue color -->
                         <!-- O - red color -->
-                        <span class="cell-content"
-                            :style="{ color: boardStore.board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">{{
-                                boardStore.board[row - 1][cell - 1] }}</span>
+                         <span class="cell-content"
+                            :style="{ color: boardStore.board[row - 1] && boardStore.board[row - 1][cell - 1] === 'X' ? 'blue' : 'red' }">
+                            {{ boardStore.board[row - 1] ? boardStore.board[row - 1][cell - 1] : '' }}
+                        </span>
                     </div>
                 </div>
             </div>

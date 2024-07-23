@@ -16,6 +16,7 @@
     "nuxt": "^3.12.3",
     "pinia": "^2.1.7",
     "vue": "latest",
+    "vue-router": "^4.0.13",
     "vue-tsc": "^2.0.26"
   },
   "devDependencies": {
