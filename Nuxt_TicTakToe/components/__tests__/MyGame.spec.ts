@@ -92,16 +92,32 @@ describe('MyGame.vue', () => {
   })
 
   it('calls timeout_func with winner message', async () => {
+    // Mock the global alert function
+    const alertMock = vi.fn()
+    global.alert = alertMock
+
     const timeoutSpy = vi.spyOn(wrapper.vm, 'timeout_func')
     const boardStore = useBoardStore()
     boardStore.board = [
-      ['X', 'X', 'X'],
+      ['X', 'X', ''],
       ['', '', ''],
       ['', '', '']
     ]
 
+    // Mock setTimeout
+    vi.useFakeTimers()
+
     await wrapper.vm.handleClick(1, 3)
+
+    // Fast-forward until all timers have been executed
+    vi.runAllTimers()
+
     expect(timeoutSpy).toHaveBeenCalledWith('Gosho wins!')
+    expect(alertMock).toHaveBeenCalledWith('Gosho wins!')
+
+    // Restore the original timers and alert function after the test
+    vi.useRealTimers()
+    vi.restoreAllMocks()
   })
 
   it('detects a winner correctly', async () => {
@@ -112,7 +128,7 @@ describe('MyGame.vue', () => {
       ['', '', '']
     ]
 
-    const result = wrapper.vm.checkWinner()
+    const result = wrapper.vm.checkWinner(3, 3)
     expect(result).toEqual({ player: 'X', line: [[0, 0], [0, 1], [0, 2]] });
   })
 
@@ -123,18 +139,4 @@ describe('MyGame.vue', () => {
     await wrapper.vm.changeGameSettings()
     expect(pushSpy).toHaveBeenCalledWith('/settings')
     })
-
-
-//   it('calls timeout_func with winner message', async () => {
-//     const timeoutSpy = vi.spyOn(wrapper.vm, 'timeout_func')
-//     const boardStore = useBoardStore()
-//     boardStore.board = [
-//       ['X', 'X', 'X'],
-//       ['', '', ''],
-//       ['', '', '']
-//     ]
-
-//     await wrapper.vm.handleClick(1, 3)
-//     expect(timeoutSpy).toHaveBeenCalledWith('Player 1 wins!')
-//   })
 })

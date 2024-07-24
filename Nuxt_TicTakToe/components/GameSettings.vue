@@ -41,6 +41,7 @@ function validateColumns() : void {
 }
 
 function validatePlayerNames() : boolean {
+    let result = true
     const my_regex = /^[a-zA-Z\s]*$/
 
     const player1_name = settingsStore.player1_name
@@ -57,45 +58,45 @@ function validatePlayerNames() : boolean {
         alert('Player names cannot be empty')
         settingsStore.player1_name = 'X'
 
-        return false
+        result = false
     }
     
     if (player2_name === '') {
         alert('Player names cannot be empty')
         settingsStore.player2_name = 'O'
 
-        return false
+        result = false
     }
 
     if (player1_name.length > 40) {
         alert('Player names cannot be more than 40 characters')
         settingsStore.player1_name = 'X'
 
-        return false
+        result = false
     }
 
     if (player2_name.length > 40) {
         alert('Player names cannot be more than 40 characters')
         settingsStore.player2_name = 'O'
 
-        return false
+        result = false
     }
 
     if (player1_name.match(my_regex) == null) {
         alert('Player names can only contain letters and spaces')
         settingsStore.player1_name = 'X'
 
-        return false
+        result = false
     }
 
     if (player2_name.match(my_regex) == null) {
         alert('Player names can only contain letters and spaces')
         settingsStore.player2_name = 'O'
 
-        return false
+        result = false
     }
 
-    return true
+    return result
 }
 
 function saveSettings(): void {
@@ -109,6 +110,7 @@ function saveSettings(): void {
         player2_name: settingsStore.player2_name
 
     }))
+
     settingsStore.showSettings = false
     router.push('/game') // Navigate to the game page
 }
