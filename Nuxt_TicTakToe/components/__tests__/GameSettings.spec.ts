@@ -3,18 +3,14 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import GameSettings from '../GameSettings.vue'
 import { useSettingsStore } from '../../store/settings_store'
+import { createRouter, createWebHistory } from 'vue-router'
 
-// Mock vue-router
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-  }),
-}))
 
 setActivePinia(createPinia())
 
 describe('GameSettings.vue', () => {
   let wrapper: any
+  let mockRouter: any
 
   let settingsStore = useSettingsStore()
   beforeEach(() => {
@@ -25,8 +21,14 @@ describe('GameSettings.vue', () => {
     settingsStore.player2_name = 'Pesho'
 
 
-
+    mockRouter = createRouter({
+      history: createWebHistory(),
+      routes: [], // You can add routes if needed for specific tests
+    });
     wrapper = mount(GameSettings, {
+      global: {
+        plugins: [mockRouter],
+      },
     })
   })
 
@@ -134,5 +136,12 @@ describe('GameSettings.vue', () => {
     expect(settings.columns).toBe(settingsStore.numColumns)
     expect(settings.player1_name).toBe(settingsStore.player1_name)
     expect(settings.player2_name).toBe(settingsStore.player2_name)
+  })
+
+  it('redirects to game page correctly', async () => {
+    const pushSpy = vi.spyOn(mockRouter, 'push');
+
+    await wrapper.vm.saveSettings();
+    expect(pushSpy).toHaveBeenCalledWith('/game');
   })
 })

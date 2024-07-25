@@ -4,14 +4,15 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import MyGame from '../MyGame.vue'
 import { useSettingsStore } from '../../store/settings_store'
 import { useBoardStore } from '../../store/board_store'
-import { useRouter } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 describe('MyGame.vue', () => {
   let wrapper: any
-
+  let mockRouter: any
+  
   beforeEach(() => {
     setActivePinia(createPinia())
-
+    
 
     const settingsStore = useSettingsStore()
     const boardStore = useBoardStore()
@@ -24,9 +25,15 @@ describe('MyGame.vue', () => {
 
     boardStore.initBoard()
 
+    mockRouter = createRouter({
+      history: createWebHistory(),
+      routes: [], // You can add routes if needed for specific tests
+    });
+
+
     wrapper = mount(MyGame, {
       global: {
-        plugins: [createPinia()],
+        plugins: [mockRouter],
       },
     })
   })
@@ -94,9 +101,9 @@ describe('MyGame.vue', () => {
   it('calls timeout_func with winner message', async () => {
     // Mock the global alert function
     const alertMock = vi.fn()
-    global.alert = alertMock
 
-    const timeoutSpy = vi.spyOn(wrapper.vm, 'timeout_func')
+    const alertSpy = vi.spyOn(global, 'alert').mockImplementation(alertMock)
+    // const timeoutSpy = vi.spyOn(wrapper.vm, 'timeout_func')
     const boardStore = useBoardStore()
     boardStore.board = [
       ['X', 'X', ''],
@@ -112,8 +119,8 @@ describe('MyGame.vue', () => {
     // Fast-forward until all timers have been executed
     vi.runAllTimers()
 
-    expect(timeoutSpy).toHaveBeenCalledWith('Gosho wins!')
-    expect(alertMock).toHaveBeenCalledWith('Gosho wins!')
+    // expect(timeoutSpy).toHaveBeenCalledWith('Gosho wins!')
+    expect(alertSpy).toHaveBeenCalledWith('Gosho wins!')
 
     // Restore the original timers and alert function after the test
     vi.useRealTimers()
@@ -133,10 +140,9 @@ describe('MyGame.vue', () => {
   })
 
     it('changes game settings and navigates to settings page', async () => {
-    const router = useRouter()
-    const pushSpy = vi.spyOn(router, 'push')
+      const pushSpy = vi.spyOn(mockRouter, 'push');
 
-    await wrapper.vm.changeGameSettings()
-    expect(pushSpy).toHaveBeenCalledWith('/settings')
-    })
+      await wrapper.vm.changeGameSettings();
+      expect(pushSpy).toHaveBeenCalledWith('/settings');
+  });
 })

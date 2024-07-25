@@ -126,6 +126,7 @@ function handleClick(row: number, cell: number): void {
     // Check if there is a winner after each move is put on the board template
     const winner = checkWinner(settingsStore.numRows, settingsStore.numColumns)
     console.log(winner)
+    console.log(settingsStore.player1_name)
     if (winner) {
         winningLine.value = winner.line
         console.log(timeout_func)
