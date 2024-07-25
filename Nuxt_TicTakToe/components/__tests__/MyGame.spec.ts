@@ -284,6 +284,17 @@ describe('MyGame.vue', () => {
     expect(result).toEqual({ player: 'X', line: [[0, 2], [1, 1], [2, 0]] });
   })
 
+  it('does not detect a winner when there is none', async () => {
+    const boardStore = useBoardStore()
+    boardStore.board = [
+      ['X', 'O', ''],
+      ['O', 'X', ''],
+      ['O', '', '']
+    ]
+    const result = wrapper.vm.checkWinner(3, 3)
+    expect(result).toBe(null);
+  })
+
     it('changes game settings and navigates to settings page', async () => {
       const pushSpy = vi.spyOn(mockRouter, 'push');
 

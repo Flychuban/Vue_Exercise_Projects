@@ -145,9 +145,34 @@ describe('GameSettings.vue', () => {
     expect(pushSpy).toHaveBeenCalledWith('/game');
   })
 
-  it('checks for valid value when row input changes', async () => {
-    settingsStore.numRows = 3
+  it('checks for valid value when correct input changes', async () => {
+    settingsStore.numRows = 4
+    settingsStore.numColumns = 5
+    settingsStore.player1_name = 'Gosho'
+    settingsStore.player2_name = 'Pesho'
+
     await wrapper.vm.saveSettings()
-    expect(settingsStore.numRows).toBe(3)
+    expect(settingsStore.numRows).toBe(4)
+    expect(settingsStore.numColumns).toBe(5)
+    expect(settingsStore.player1_name).toBe('Gosho')
+    expect(settingsStore.player2_name).toBe('Pesho')
   })
+
+  it('checks for valid value when incorrect rows and column changes', async () => {
+    wrapper.vm.rowErrorMessage = 'Rows cannot be less than 3.'
+    wrapper.vm.columnErrorMessage = 'Columns cannot be less than 3.'
+
+    const result = await wrapper.vm.saveSettings()
+    expect(result).toBe(undefined)
+  })
+
+  it('checks for valid value when incorrect player names changes', async () => {
+    settingsStore.player1_name = 'A very very very very very very long name'
+    settingsStore.player2_name = ''
+
+    const result = await wrapper.vm.saveSettings()
+    expect(result).toBe(undefined)
+  })
+
+
 })

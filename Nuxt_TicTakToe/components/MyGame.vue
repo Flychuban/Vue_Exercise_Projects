@@ -143,7 +143,6 @@ function handleClick(row: number, cell: number): void {
 
 
 const lineStyle = computed((): LineStyleType | undefined => {
-    if (!winningLine.value) return {}
     const start = winningLine.value[0]
     const end = winningLine.value[2]
     const [startRow, startCol] = start
@@ -211,7 +210,7 @@ const lineStyle = computed((): LineStyleType | undefined => {
                     </div>
                 </div>
             </div>
-            <div v-if="winningLine" class="winner-line" :style="lineStyle || {}" :class="lineType || ''"></div>
+            <div v-if="winningLine" class="winner-line" :style="lineStyle" :class="lineType"></div>
         </div>
         <div class="status">
             <div class="status-inner">
