@@ -144,4 +144,10 @@ describe('GameSettings.vue', () => {
     await wrapper.vm.saveSettings();
     expect(pushSpy).toHaveBeenCalledWith('/game');
   })
+
+  it('checks for valid value when row input changes', async () => {
+    settingsStore.numRows = 3
+    await wrapper.vm.saveSettings()
+    expect(settingsStore.numRows).toBe(3)
+  })
 })
