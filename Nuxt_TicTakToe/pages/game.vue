@@ -5,7 +5,7 @@ import MyGame from '../components/MyGame.vue'
 
 
 <template>
-    <h1>Tic Tak Toe</h1>
+    <h1>Tic Tac Toe</h1>
     <MyGame />
 </template>
 

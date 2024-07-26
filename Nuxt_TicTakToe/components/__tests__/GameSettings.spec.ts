@@ -36,7 +36,6 @@ describe('GameSettings.vue', () => {
   it('should validate rows correctly', async () => {
     settingsStore.numRows = 2
     await wrapper.vm.validateRows()
-    console.log(wrapper.vm.rowErrorMessage)
     expect(wrapper.vm.rowErrorMessage).toBe('Rows cannot be less than 3.')
 
     settingsStore.numRows = 21

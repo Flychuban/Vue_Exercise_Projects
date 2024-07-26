@@ -10,6 +10,7 @@ const router = useRouter()
 
 onBeforeMount(() => {
     if (!localStorage.getItem('settings')) {
+        console.log('Settings not found in localStorage')
         settingsStore.showSettings = true
         return router.push('/settings')
     } else {

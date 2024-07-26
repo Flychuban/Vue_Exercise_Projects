@@ -116,7 +116,6 @@ function handleClick(row: number, cell: number): void {
     // In range start from 1 so we need to decrement by 1
     row--
     cell--
-    console.log(boardStore.board[row][cell])
     if (boardStore.board[row][cell] !== '')
         return
 
@@ -125,11 +124,8 @@ function handleClick(row: number, cell: number): void {
 
     // Check if there is a winner after each move is put on the board template
     const winner = checkWinner(settingsStore.numRows, settingsStore.numColumns)
-    console.log(winner)
-    console.log(settingsStore.player1_name)
     if (winner) {
         winningLine.value = winner.line
-        console.log(timeout_func)
         timeout_func(`${winner.player === "X" ? settingsStore.player1_name : settingsStore.player2_name} wins!`)
         return
     }

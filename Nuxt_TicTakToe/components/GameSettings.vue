@@ -117,7 +117,7 @@ function saveSettings(): void {
 </script>
 
 <template>
-    <h1>Tic Tak Toe</h1>
+    <h1>Tic Tac Toe</h1>
     <div class="form-container">
         <form @submit.prevent="saveSettings">
             <h2>Write down Tic Tac Toe Board dimensions</h2>
