@@ -1,28 +1,62 @@
 <script setup>
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { Loader } from "@googlemaps/js-api-loader"
 
-
-const loader = new Loader({
-  apiKey: "AIzaSyDOc0GjZZ2KF5rzCyW2V8t7Ozxvmz553Lk",
-})
+import { useRuntimeConfig } from '#app'
 
 const mapDiv = ref(null)
 
 onMounted(async () => {
-  await loader.importLibrary('maps')
-  .then(
-    ({Map}) => {
-      new Map(mapDiv.value, {
-        center: { lat: 42.69, lng: 23.32 },
-        zoom: 11,
-        gestureHandling: "cooperative",
-        mapTypeId: 'roadmap'
-      });
-    }
-  )
+  const config = useRuntimeConfig();
+
+  console.log("api keyyy: ", config.public.googleMapsApiKey)
+  const loader = new Loader({
+  apiKey: config.public.googleMapsApiKey,
+  })
+  console.log('mounted  ');
+  const { Map } = await loader.importLibrary('maps')
+  const { ElevationService } = await loader.importLibrary('elevation')
+  const map = new Map(mapDiv.value, {
+    center: { lat: 42.69, lng: 23.32 },
+    zoom: 11,
+    gestureHandling: "cooperative",
+    mapTypeId: 'roadmap'
+  });
+
+
+  const elevator = new ElevationService();
+  const infowindow = new google.maps.InfoWindow({});
+
+  map.addListener("click", (event) => {
+    displayLocationElevation(event.latLng, elevator, infowindow);
+  });
 })
+
+function displayLocationElevation(location, elevator, infowindow) {
+  // Initiate the location request
+  elevator
+    .getElevationForLocations({
+      locations: [location],
+    })
+    .then(({ results }) => {
+      infowindow.setPosition(location);
+      // Retrieve the first result
+      if (results[0]) {
+        // Open the infowindow indicating the elevation at the clicked position.
+        infowindow.setContent(
+          "The elevation at this point <br>is " +
+          results[0].elevation +
+          " meters.",
+        );
+      } else {
+        infowindow.setContent("No results found");
+      }
+    })
+    .catch((e) =>
+      infowindow.setContent("Elevation service failed due to: " + e),
+    );
+}
 
 </script>
 
@@ -32,14 +66,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-
 h1 {
   text-align: center;
 }
+
 .map-container {
   width: 90dvw;
   height: 90dvh;
   margin: auto;
 }
-
 </style>
